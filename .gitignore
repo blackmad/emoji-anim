@@ -3,3 +3,4 @@
 *.gif
 *.pyc
 output/*
+.DS_Store
