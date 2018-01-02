@@ -1,3 +1,8 @@
+#!/usr/bin/python
+
+# "quickly" convert pngs in parallel
+# ~/node_modules/.bin/svg2png-many -i . -o .
+
 from io import StringIO
 
 import xml.etree.ElementTree as ET
@@ -14,11 +19,11 @@ count = 0
 def find_all(node, names):
   all = []
   for name in names:
-    all += [n for n in root.findall('.//{http://www.w3.org/2000/svg}' + name)]
+    all += [n for n in node.findall('.//{http://www.w3.org/2000/svg}' + name)]
   return all
 
 def find_all_shapes(node):
-  return find_all(node, ['path', 'rect', 'circle'])
+  return find_all(node, ['path', 'rect', 'circle', 'ellipse'])
 
 print('query finds %d nodes' % len(find_all_shapes(root)))
 
