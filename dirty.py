@@ -137,5 +137,5 @@ if args.animate:
   #os.system('find output/*svg -print0 | xargs -0 -I _ svgexport _ _.png 256:256')
   os.system('~/node_modules/.bin/svg2png-many -w 256 -h 256 -i output/ -o output/')
   print('anim')
-  os.system('convert output/*png -loop 0 -coalesce -duplicate 5,-1 -duplicate 1,-1-0 -duplicate 5,0 output/anim.gif')
+  os.system('convert -dispose previous output/*png -loop 0 -duplicate 5,-1 -duplicate 1,-1-0 output/output_000.png -duplicate 5,0 output/anim.gif')
   os.system('open -a "Google Chrome" output/anim.gif')
