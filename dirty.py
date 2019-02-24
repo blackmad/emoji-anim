@@ -36,8 +36,11 @@ def char_is_emoji(character):
 
 codepoint = args.codepoint
 
-if (char_is_emoji(codepoint)):
-  codepoint = str(codepoint.encode("unicode_escape"))[8:-1]
+print(len(codepoint))
+if (char_is_emoji(codepoint)) or len(codepoint) < 4:
+  codepoint = '-'.join([str(i.encode("unicode_escape"))[5:-1].lstrip('0') for i in codepoint])
+
+  print(codepoint)
 
 codepoint = codepoint.replace('U+', '').replace('u+', '').lower()
 emoji_name = codepoint
@@ -57,9 +60,15 @@ elif args.twitter:
     print(url)
     file = urllib.request.urlopen(url)
   except:
-    url = 'https://raw.githubusercontent.com/twitter/twemoji/gh-pages/2/svg/%s-1f3fe-200d-2640-fe0f.svg' % codepoint
-    print(url)
-    file = urllib.request.urlopen(url)
+    try:
+      url = 'https://raw.githubusercontent.com/twitter/twemoji/gh-pages/2/svg/%s-1f3fe-200d-2640-fe0f.svg' % codepoint
+      print(url)
+      file = urllib.request.urlopen(url)
+    except:
+      url = 'https://raw.githubusercontent.com/twitter/twemoji/gh-pages/2/svg/%s.svg' % codepoint.split('-')[0]
+      print(url)
+      file = urllib.request.urlopen(url)
+
 
 tree = ET.parse(file)
 root = tree.getroot()
