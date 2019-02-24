@@ -14,6 +14,7 @@ import os
 import os.path
 import shutil
 import argparse
+import emoji
 
 output_dir = 'output'
 show_grids = False
@@ -23,14 +24,23 @@ if os.path.exists(output_dir):
 os.makedirs(output_dir)
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-a", "--animate", action="store_true")
+parser.add_argument("-a", "--animate", action="store_true", default=True)
 parser.add_argument("-t", "--twitter", action="store_true", default=True)
 parser.add_argument("-g", "--google", action="store_true")
-parser.add_argument("codepoint", type=str, help="the emoji codepoint", default="1f634")
+parser.add_argument("codepoint", type=str, help="the emoji codepoint or character or shortname", default="1f634")
 args = parser.parse_args()
 print(args)
 
-codepoint = args.codepoint.replace('U+', '').replace('u+', '').lower()
+def char_is_emoji(character):
+  return character in emoji.UNICODE_EMOJI
+
+codepoint = args.codepoint
+
+if (char_is_emoji(codepoint)):
+  codepoint = str(codepoint.encode("unicode_escape"))[8:-1]
+
+codepoint = codepoint.replace('U+', '').replace('u+', '').lower()
+emoji_name = codepoint
 
 if args.google:
   try:
@@ -137,5 +147,5 @@ if args.animate:
   #os.system('find output/*svg -print0 | xargs -0 -I _ svgexport _ _.png 256:256')
   os.system('~/node_modules/.bin/svg2png-many -w 256 -h 256 -i output/ -o output/')
   print('anim')
-  os.system('convert -dispose previous output/*png -loop 0 -duplicate 5,-1 -duplicate 1,-1-0 output/output_000.png -duplicate 5,0 output/anim.gif')
-  os.system('open -a "Google Chrome" output/anim.gif')
+  os.system('convert -dispose previous output/*png -loop 0 -duplicate 5,-1 -duplicate 1,-1-0 output/output_000.png -duplicate 5,0 output/%s.gif' % emoji_name)
+  os.system('open -a "Google Chrome" output/%s.gif' % emoji_name)
